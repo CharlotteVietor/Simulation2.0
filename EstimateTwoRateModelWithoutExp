@@ -1,0 +1,50 @@
+function [samples, stats] = estimateTwoRateModelWithoutExp(y, xImp, xExp, p, v)
+ 
+NSubjects = size(y,2);
+NTrials = size(y,1);
+NChains = 3;
+ 
+dataStruct = struct('y', y, ... 
+    'p', p,...
+    'v', v,...
+    'NSubjects', NSubjects,...
+    'NTrials', NTrials);
+ 
+% we initialize the params to the observed data values, but with decreasing confidence,
+% as suggested on p593 of Gelman
+for i=1:NChains
+    S(i).AHypImp = 5;
+    S(i).AHypExp = 3;
+    S(i).AImp1 = S(i).AHypImp.*ones(NSubjects,1);
+    S(i).AExp1 = S(i).AHypExp.*ones(NSubjects,1);
+    S(i).AHypImpPrec = 10^-3;
+    S(i).AHypExpPrec = 10^-3;
+        
+    S(i).BHypImp = -3;
+    S(i).BHypExp = -2;
+    S(i).BImp1 = S(i).BHypImp.*ones(NSubjects,1);
+    S(i).BExp1 = S(i).BHypExp.*ones(NSubjects,1);
+    S(i).BHypImpPrec = 10^-3;
+    S(i).BHypExpPrec = 10^-3;
+    
+    S(i).qImp = ones(NSubjects,1);
+    S(i).qExp = ones(NSubjects,1);
+    
+    S(i).r = 1./4^2*ones(NSubjects,1);
+    S(i).xImp = xImp;
+    S(i).xExp = xExp;
+end
+ 
+[samples, stats] = matbugs(dataStruct, ...
+        fullfile(pwd, 'BayesianStateSpaceFitTwoRateHierarchicalWithoutExp.txt'), ...
+        'nburnin', 20000, 'nsamples', 50000, ...
+        'nChains', NChains, ...
+        'init', S, ...
+        'thin', 1, ...
+        'workingDir', fullfile(pwd,'tmp'),...
+        'monitorParams', {'AImp', 'AExp', 'BImp', 'BExp', 'qImp', 'qExp', 'r',...
+        'AHypImp', 'AHypExp', 'BHypImp', 'BHypExp'}, ...
+        'openBugs', 1,...
+        'DICstatus',1);
+    
+end    
