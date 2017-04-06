@@ -1,0 +1,34 @@
+model{
+    for( s in 1 : NSubjects ) {
+        for( t in 1 : NTrials ) {
+            xImpmu[t,s] <- AImp[s] * xImp[t , s] - v[t,s]*BImp[s] * u[t , s]
+            xExpmu[t,s] <- AExp[s] * xExp[t , s] - v[t,s]*BExp[s] * u[t , s]
+            xImp[t+1, s] ~ dnorm(xImpmu[t,s], qImp[s])
+            xExp[t+1, s] ~ dnorm(xExpmu[t,s], qExp[s])
+            x[t,s] <- xImp[t, s]+xExp[t, s]
+            y[t , s] ~ dnorm(x[t, s], r[s])
+            u[t, s] <- y[t,s] + p[t,s]
+        }
+ 
+        # Restrict B to the range 0-1
+        logit(BImp[s]) <- BImp1[s]
+        logit(BExp[s]) <- BExp1[s]
+ 
+        # Restrict A to the range 0-1
+        logit(AImp[s]) <- AImp1[s]
+        logit(AExp[s]) <- AExp1[s]
+ 
+        AImp1[s] ~ dnorm(0.0, 1.0E-3)
+        AExp1[s] ~ dnorm(0.0, 1.0E-3)
+ 
+        BImp1[s] ~ dnorm(0.0, 1.0E-3)
+        BExp1[s] ~ dnorm(0.0, 1.0E-3)
+        
+        qImp[s] ~ dgamma(1.0E-3,1.0E-3)
+        qExp[s] ~ dgamma(1.0E-3,1.0E-3)
+ 
+        r[s] ~ dgamma(1.0E-3,1.0E-3)
+        
+    }
+ 
+}
