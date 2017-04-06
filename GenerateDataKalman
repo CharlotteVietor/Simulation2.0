@@ -1,0 +1,78 @@
+numSubjects = 50;
+ 
+Aimp = 0.97;
+Aimpsig = 0.005;
+muAimp = log(Aimp./(1-Aimp));
+sigmaAimp = log((Aimp+Aimpsig)./(1-(Aimp+Aimpsig)))-log(Aimp./(1-Aimp));
+ 
+Aexp = 0.94;
+Aexpsig = 0.01;
+muAexp = log(Aexp./(1-Aexp));
+sigmaAexp = log((Aexp+Aexpsig)./(1-(Aexp+Aexpsig)))-log(Aexp./(1-Aexp));
+ 
+A(1:numSubjects,1) = 1./(1+exp(-(muAimp+sigmaAimp*randn(numSubjects, 1))));
+A(1:numSubjects,2) = 1./(1+exp(-(muAexp+sigmaAexp*randn(numSubjects, 1))));
+ 
+meanrSub = 4;
+varrSub = 0.2^2;
+meanqimpSub = 0.5;
+varqimpSub = 0.03^2;
+meanqexpSub = 0.95;
+varqexpSub = 0.15^2;
+ 
+krSub = meanrSub^2/varrSub;
+thetarSub = varrSub/meanrSub;
+kqimpSub = meanqimpSub^2/varqimpSub;
+thetaqimpSub = varqimpSub/meanqimpSub;
+kqexpSub = meanqexpSub^2/varqexpSub;
+thetaqexpSub = varqexpSub/meanqexpSub;
+ 
+rSub= gamrnd(krSub, thetarSub, numSubjects, 1);
+qSub = [abs(gamrnd(kqimpSub, thetaqimpSub, numSubjects, 1)) abs(gamrnd(kqexpSub, thetaqexpSub, numSubjects, 1))];
+ 
+numTrials = 1218;
+K = 1;
+t = (1:768)';
+p(1:450)=0;
+p(451:1218) = 10.*(sin(2*pi*(1/768)*t) + sin(2*pi*(2/768)*t) + sin(2*pi*(4/768)*t) + sin(2*pi*(8/768)*t) + sin(2*pi*(16/768)*t));
+ 
+ StratPar.A=A;
+ StratPar.q=qSub;
+ StratPar.r=rSub;
+    
+for s=1:numSubjects
+    %% trial parameters
+    y = zeros(numTrials,1);
+    x = zeros(numTrials,2);
+    e = zeros(numTrials,2);
+    indexes = randperm(450);
+    V=zeros(1,450);
+    V(indexes(1:225))=1;
+    V(451:1218)=1;
+    
+    q = repmat(qSub(s,:),numTrials,1).*randn(numTrials,2);
+    r = rSub(s).*randn(numTrials,2);
+    Pinf(s,1) = dare(A(s,1), 1, qSub(s,1).^2, rSub(s).^2);
+    Pinf(s,2) = dare(A(s,2), 1, qSub(s,2).^2, rSub(s).^2);
+    B(s,1) = Pinf(s,1)./(Pinf(s,1)+rSub(s).^2);
+    B(s,2) = Pinf(s,2)./(Pinf(s,2)+rSub(s).^2);
+   
+    %% Loop through trials
+    for n=1:numTrials
+        y(n) = x(n,1)+x(n,2) + r(n);
+        e(n,1) = (y(n) + p(n));
+        e(n,2) = y(n) + p(n);
+ 
+        x(n+1, 1) = A(s,1)*x(n,1) - B(s,1)* e(n,1)*V(n) + q(n,1);
+        x(n+1, 2) = A(s,2)*x(n,2) - B(s,2)* e(n,2)*V(n) + q(n,2);
+    end
+    
+    StratSim(s).x = x;
+    StratSim(s).e = e;
+    StratSim(s).y = y;
+    StratSim(s).V=V';
+    StratSim(s).p=p';
+    
+end
+ 
+StratPar.B = B;
