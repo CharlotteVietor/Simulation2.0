@@ -1,0 +1,29 @@
+disp('Loading data') ;
+%% Load data
+load('SimulationKalman/Data/StratSim.mat');
+y = zeros(768,50);
+xImp = zeros(769,50);
+xExp = zeros(769,50);
+p = zeros(768,50);
+v = zeros(768,50);
+ 
+%% Create param
+for ii=1:50
+    y(:,ii) = StratSim(ii).y(451:end);
+    xImp(:,ii) = StratSim(ii).x(451:end,1);
+    xExp(:,ii) = StratSim(ii).x(451:end,2);
+    p(:,ii) = StratSim(ii).p(451:end);
+    v(:,ii) = StratSim(ii).V(451:end);
+end
+ 
+% y = aimingError;
+% p = rotation/pi*180;
+% v = showCursor;
+% indices = abs(y+p)>30;
+% y(indices) = NaN;
+ 
+disp('Running function') ;
+%% Run function
+[samples,stats] = estimateTwoRateModelWithoutExp(y, xImp, xExp, p, v);
+save('SimulationKalman/Results/SimHierWithoutExp.mat', 'stats', 'samples')
+disp('Done!') ;
