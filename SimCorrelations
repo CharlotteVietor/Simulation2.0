@@ -1,0 +1,65 @@
+load ('StratPar.mat');
+load ('SimulationKalman/Results/SimHierWithoutExp.mat');
+ 
+subplot(4,2,1)
+plot(StratPar.A(:,1),(stats.mean.AImp), '*r')
+refline(1,0)
+title('Correlation AImp', 'fontweight', 'bold')
+legend('Corrcoef = 0.6166')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+ 
+subplot(4,2,2)
+plot(StratPar.A(:,2),(stats.mean.AExp), '*r')
+refline(1,0)
+title('Correlation AExp', 'fontweight', 'bold')
+legend('Corrcoef = 0.6946')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+ 
+subplot(4,2,3)
+plot(StratPar.B(:,1),(stats.mean.BImp), '*r')
+refline(1,0)
+title('Correlation BImp', 'fontweight', 'bold')
+legend('Corrcoef = 0.5647')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+ 
+subplot(4,2,4)
+plot(StratPar.B(:,2),(stats.mean.BExp), '*r')
+refline(1,0)
+title('Correlation BExp', 'fontweight', 'bold')
+legend('Corrcoef = 0.8359')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+ 
+subplot(4,2,5)
+plot(StratPar.q(:,1),(1./sqrt(stats.mean.qImp)), '*r')
+refline(1,0)
+title('Correlation qImp', 'fontweight', 'bold')
+legend('Corrcoef = -0.0205')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+ 
+subplot(4,2,6)
+plot(StratPar.q(:,2),(1./sqrt(stats.mean.qExp)), '*r')
+refline(1,0)
+title('Correlation qExp', 'fontweight', 'bold')
+legend('Corrcoef = 0.0537')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+ 
+subplot(4,2,7)
+plot(StratPar.r,(1./sqrt(stats.mean.r)), '*r')
+refline(1,0)
+title('Correlation r', 'fontweight', 'bold')
+legend('Corrcoef = 0.8428')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
