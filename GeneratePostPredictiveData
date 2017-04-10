@@ -1,0 +1,54 @@
+load('SimulationKalman/Results/SimHierWithoutExp')
+load('F:\ImplicitExplicit\SimulationKalman\Data\StratSim.mat')
+
+AImpN = samples.AImp(2,2,:);
+AExpN = samples.AExp(2,2,:);
+BImpN = samples.BImp(2,2,:);
+BExpN = samples.BExp(2,2,:);
+qImpN = samples.qImp(2,2,:);
+qExpN = samples.qExp(2,2,:);
+rN = samples.r(2,2,:);
+ 
+AImpNew = squeeze(AImpN);
+AExpNew = squeeze(AExpN);
+BImpNew = squeeze(BImpN);
+BExpNew = squeeze(BExpN);
+qNew(1:50,1) = squeeze(qImpN);
+qNew(1:50,2) = squeeze(qExpN);
+rNew = squeeze(rN);
+ 
+numTrials=1218;
+numSubjects=50;
+ 
+for s=1:numSubjects
+ %% set trial parameters
+    y = zeros(numTrials,1);
+    x = zeros(numTrials,2);
+    e = zeros(numTrials,2);
+    indexes = randperm(450);
+    V=zeros(1,450);
+    V(indexes(1:225))=1;
+    V(451:1218)=1;
+    t = (1:768)';
+    p(1:450)=0;
+    p(451:1218) = 10.*(sin(2*pi*(1/768)*t) + sin(2*pi*(2/768)*t) + sin(2*pi*(4/768)*t) + sin(2*pi*(8/768)*t) + sin(2*pi*(16/768)*t));
+ 
+    q = repmat(qNew(s,:),numTrials,1).*randn(numTrials,2);
+    r = rNew(s).*randn(numTrials,2);
+ 
+%% Loop through trials
+    for n=1:numTrials
+        y(n) = x(n,1)+x(n,2) + r(n);
+        e(n,1) = (y(n) + p(n));
+        e(n,2) = y(n) + p(n);
+ 
+        x(n+1, 1) = AImpNew(s)*x(n,1) - BImpNew(s)* e(n,1)*V(n) + q(n,1);
+        x(n+1, 2) = AExpNew(s)*x(n,2) - BExpNew(s)* e(n,2)*V(n) + q(n,2);
+    end
+    
+    StratSimPost(s).x = x;
+    StratSimPost(s).e = e;
+    StratSimPost(s).y = y;
+    StratSimPost(s).V=V';
+    StratSimPost(s).p=p';
+end
