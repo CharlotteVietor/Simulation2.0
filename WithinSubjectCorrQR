@@ -1,0 +1,53 @@
+load('SimulationKalman/Results/SimHierWithoutExp');
+ 
+CCqImp = zeros(50,1);
+CCqExp = zeros(50,1);
+CCq = zeros (50,1);
+ 
+for s=1:50
+qImpN = samples.qImp(1,:,s);
+qExpN = samples.qExp(1,:,s);
+rN = samples.r(1,:,s);
+ 
+qImpNew = squeeze(qImpN)';
+qExpNew = squeeze(qExpN)';
+rNew = squeeze(rN)';
+    
+CCqImp1= corrcoef(1./sqrt(qImpNew), 1./sqrt(rNew));
+CCqExp1= corrcoef(1./sqrt(qExpNew), 1./sqrt(rNew));
+CCq1 = corrcoef(1./sqrt(qImpNew), 1./sqrt(qExpNew));
+ 
+CCqImp(s,1) = CCqImp1(2,1);
+CCqExp(s,1) = CCqExp1(2,1);
+CCq(s,1) = CCq1(2,1);
+end
+ 
+subplot(1,3,1)
+plot(CCqImp, 'g', 'linewidth', 2)
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+title('Within subject correlations')
+ylabel('Correlation coefficient')
+xlabel('Subject number')
+legend('Correlation qImp and r')
+ 
+subplot(1,3,2)
+plot(CCqExp, 'r', 'linewidth', 2)
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+title('Within subject correlations')
+ylabel('Correlation coefficient')
+xlabel('Subject number')
+legend('Correlation qExp and r')
+ 
+subplot (1,3,3)
+plot(CCq, 'b', 'linewidth', 2)
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+title('Within subject correlations')
+ylabel('Correlation coefficient')
+xlabel('Subject number')
+legend('Correlation qImp and qExp')
