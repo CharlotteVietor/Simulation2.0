@@ -1,0 +1,247 @@
+load('SimulationKalman/Results/SimHierWithoutExpLocalMinimum')
+load('F:\ImplicitExplicit\SimulationKalman\Data\StratSim.mat')
+load('F:\ImplicitExplicit\SimulationKalman\Data\StratPar.mat')
+ 
+AImpC1 = samples.AImp(1,:,:);
+AExpC1 = samples.AExp(1,:,:);
+BImpC1 = samples.BImp(1,:,:);
+BExpC1 = samples.BExp(1,:,:);
+qImpC1 = samples.qImp(1,:,:);
+qExpC1 = samples.qExp(1,:,:);
+rC1 = samples.r(1,:,:);
+ 
+AImpC2 = samples.AImp(2,:,:);
+AExpC2 = samples.AExp(2,:,:);
+BImpC2 = samples.BImp(2,:,:);
+BExpC2 = samples.BExp(2,:,:);
+qImpC2 = samples.qImp(2,:,:);
+qExpC2 = samples.qExp(2,:,:);
+rC2 = samples.r(2,:,:);
+ 
+AImpC3 = samples.AImp(3,:,:);
+AExpC3 = samples.AExp(3,:,:);
+BImpC3 = samples.BImp(3,:,:);
+BExpC3 = samples.BExp(3,:,:);
+qImpC3 = samples.qImp(3,:,:);
+qExpC3 = samples.qExp(3,:,:);
+rC3 = samples.r(3,:,:);
+ 
+AImpC1New = squeeze(AImpC1);
+AExpC1New = squeeze(AExpC1);
+BImpC1New = squeeze(BImpC1);
+BExpC1New = squeeze(BExpC1);
+qImpC1New = squeeze(qImpC1);
+qExpC1New = squeeze(qExpC1);
+rC1New = squeeze(rC1);
+ 
+AImpC2New = squeeze(AImpC2);
+AExpC2New = squeeze(AExpC2);
+BImpC2New = squeeze(BImpC2);
+BExpC2New = squeeze(BExpC2);
+qImpC2New = squeeze(qImpC2);
+qExpC2New = squeeze(qExpC2);
+rC2New = squeeze(rC2);
+ 
+AImpC3New = squeeze(AImpC3);
+AExpC3New = squeeze(AExpC3);
+BImpC3New = squeeze(BImpC3);
+BExpC3New = squeeze(BExpC3);
+qImpC3New = squeeze(qImpC3);
+qExpC3New = squeeze(qExpC3);
+rC3New = squeeze(rC3);
+ 
+subplot(2,4,1)
+plot(StratPar.A(:,1), mean(AImpC1New), '*r')
+hold on
+plot(StratPar.A(:,1), mean(AImpC2New), '*g')
+plot(StratPar.A(:,1), mean(AImpC3New), '*b')
+refline(1,0)
+title('Correlation AImp', 'fontweight', 'bold')
+ylabel('Estimated value')
+xlabel('Input value')
+axis equal
+legend('Normal prior', 'Higher prior', 'Lower prior')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+ 
+subplot(2,4,5)
+plot(StratPar.A(:,2), mean(AExpC1New), '*r')
+hold on
+plot(StratPar.A(:,2), mean(AExpC2New), '*g')
+plot(StratPar.A(:,2), mean(AExpC3New), '*b')
+refline(1,0)
+title('Correlation AExp', 'fontweight', 'bold')
+ylabel('Estimated value')
+xlabel('Input value')
+axis equal
+%legend('Normal prior', 'Higher prior', 'Lower prior')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+ 
+subplot(2,4,2)
+plot(StratPar.B(:,1), mean(BImpC1New), '*r')
+hold on
+plot(StratPar.B(:,1), mean(BImpC2New), '*g')
+plot(StratPar.B(:,1), mean(BImpC3New), '*b')
+refline(1,0)
+title('Correlation BImp', 'fontweight', 'bold')
+ylabel('Estimated value')
+xlabel('Input value')
+axis equal
+%legend('Normal prior', 'Higher prior', 'Lower prior')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+ 
+subplot(2,4,6)
+plot(StratPar.B(:,2), mean(BExpC1New), '*r')
+hold on
+plot(StratPar.B(:,2), mean(BExpC2New), '*g')
+plot(StratPar.B(:,2), mean(BExpC3New), '*b')
+refline(1,0)
+title('Correlation BExp', 'fontweight', 'bold')
+ylabel('Estimated value')
+xlabel('Input value')
+axis equal
+%legend('Normal prior', 'Higher prior', 'Lower prior')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+ 
+subplot(2,4,3)
+plot(StratPar.q(:,1), mean(qImpC1New), '*r')
+hold on
+plot(StratPar.q(:,1), mean(qImpC2New), '*g')
+plot(StratPar.q(:,1), mean(qImpC3New), '*b')
+refline(1,0)
+title('Correlation qImp', 'fontweight', 'bold')
+ylabel('Estimated value')
+xlabel('Input value')
+axis equal
+%legend('Normal prior', 'Higher prior', 'Lower prior')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+ 
+subplot(2,4,7)
+plot(StratPar.q(:,2), mean(qExpC1New), '*r')
+hold on
+plot(StratPar.q(:,2), mean(qExpC2New), '*g')
+plot(StratPar.q(:,2), mean(qExpC3New), '*b')
+refline(1,0)
+title('Correlation qExp', 'fontweight', 'bold')
+ylabel('Estimated value')
+xlabel('Input value')
+axis equal
+%legend('Normal prior', 'Higher prior', 'Lower prior')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+ 
+subplot(2,4,4)
+plot(StratPar.r, mean(rC1New), '*r')
+hold on
+plot(StratPar.r, mean(rC2New), '*g')
+plot(StratPar.r, mean(rC3New), '*b')
+refline(1,0)
+title('Correlation r', 'fontweight', 'bold')
+ylabel('Estimated value')
+xlabel('Input value')
+axis equal
+%legend('Normal prior', 'Higher prior', 'Lower prior')
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+ 
+% subplot(2,4,1)
+% plot(mean(AImpC1New'), 'r')
+% hold on
+% plot(mean(AImpC2New'), 'g')
+% plot(mean(AImpC3New'), 'b')
+% box off
+% set(gcf,'color', 'white')
+% set(gca, 'fontweight', 'bold')
+% title('Local minimum AImp, averaged across subjects')
+% ylabel('Estimate AImp')
+% xlabel('Sample number')
+% legend('Normal prior', 'Higher prior', 'Lower prior')
+% 
+% subplot(2,4,5)
+% plot(mean(AExpC1New'), 'r')
+% hold on
+% plot(mean(AExpC2New'), 'g')
+% plot(mean(AExpC3New'), 'b')
+% box off
+% set(gcf,'color', 'white')
+% set(gca, 'fontweight', 'bold')
+% title('Local minimum AExp, averaged across subjects')
+% ylabel('Estimate AExp')
+% xlabel('Sample number')
+% legend('Normal prior', 'Higher prior', 'Lower prior')
+% 
+% subplot(2,4,2)
+% plot(mean(BImpC1New'), 'r')
+% hold on
+% plot(mean(BImpC2New'), 'g')
+% plot(mean(BImpC3New'), 'b')
+% box off
+% set(gcf,'color', 'white')
+% set(gca, 'fontweight', 'bold')
+% title('Local minimum BImp, averaged across subjects')
+% ylabel('Estimate BImp')
+% xlabel('Sample number')
+% legend('Normal prior', 'Higher prior', 'Lower prior')
+% 
+% subplot(2,4,6)
+% plot(mean(BExpC1New'), 'r')
+% hold on
+% plot(mean(BExpC2New'), 'g')
+% plot(mean(BExpC3New'), 'b')
+% box off
+% set(gcf,'color', 'white')
+% set(gca, 'fontweight', 'bold')
+% title('Local minimum BExp, averaged across subjects')
+% ylabel('Estimate BExp')
+% xlabel('Sample number')
+% legend('Normal prior', 'Higher prior', 'Lower prior')
+% 
+% subplot(2,4,3)
+% plot(mean(qImpC1New'), 'r')
+% hold on
+% plot(mean(qImpC2New'), 'g')
+% plot(mean(qImpC3New'), 'b')
+% box off
+% set(gcf,'color', 'white')
+% set(gca, 'fontweight', 'bold')
+% title('Local minimum qImp, averaged across subjects')
+% ylabel('Estimate qImp')
+% xlabel('Sample number')
+% legend('Normal prior', 'Higher prior', 'Lower prior')
+% 
+% subplot(2,4,7)
+% plot(mean(qExpC1New'), 'r')
+% hold on
+% plot(mean(qExpC2New'), 'g')
+% plot(mean(qExpC3New'), 'b')
+% box off
+% set(gcf,'color', 'white')
+% set(gca, 'fontweight', 'bold')
+% title('Local minimum qExp, averaged across subjects')
+% ylabel('Estimate qExp')
+% xlabel('Sample number')
+% legend('Normal prior', 'Higher prior', 'Lower prior')
+% 
+% subplot(2,4,4)
+% plot(mean(rC1New'), 'r')
+% hold on
+% plot(mean(rC2New'), 'g')
+% plot(mean(rC3New'), 'b')
+% box off
+% set(gcf,'color', 'white')
+% set(gca, 'fontweight', 'bold')
+% title('Local minimum r, averaged across subjects')
+% ylabel('Estimate r')
+% xlabel('Sample number')
+% legend('Normal prior', 'Higher prior', 'Lower prior')
