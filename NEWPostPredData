@@ -1,0 +1,164 @@
+load('SimulationKalman/Results/SimHierWithoutExp')
+load('F:\ImplicitExplicit\SimulationKalman\Data\StratSim.mat')
+ 
+for ii=1:10
+    AImpN = samples.AImp(unidrnd(3),unidrnd(50000),1);
+    AExpN = samples.AExp(unidrnd(3),unidrnd(50000),1);
+    BImpN = samples.BImp(unidrnd(3),unidrnd(50000),1);
+    BExpN = samples.BExp(unidrnd(3),unidrnd(50000),1);
+    qImpN = samples.qImp(unidrnd(3),unidrnd(50000),1);
+    qExpN = samples.qExp(unidrnd(3),unidrnd(50000),1);
+    rN = samples.r(unidrnd(3),unidrnd(50000),1);
+ 
+    AImpNew(ii,1) = squeeze(AImpN);
+    AExpNew(ii,1) = squeeze(AExpN);
+    BImpNew(ii,1) = squeeze(BImpN);
+    BExpNew(ii,1) = squeeze(BExpN);
+    qNew(ii,1) = squeeze(qImpN);
+    qNew(ii,2) = squeeze(qExpN);
+    rNew(ii,1) = squeeze(rN);
+end
+ 
+numTrials=1218;
+ 
+for s=1:10
+ %% set trial parameters
+    y = zeros(numTrials,1);
+    x = zeros(numTrials,2);
+    e = zeros(numTrials,2);
+    indexes = randperm(450);
+    V=zeros(1,450);
+    V(indexes(1:225))=1;
+    V(451:1218)=1;
+    t = (1:768)';
+    p(1:450)=0;
+    p(451:1218) = 10.*(sin(2*pi*(1/768)*t) + sin(2*pi*(2/768)*t) + sin(2*pi*(4/768)*t) + sin(2*pi*(8/768)*t) + sin(2*pi*(16/768)*t));
+ 
+    q = repmat(qNew(s,:),numTrials,1).*randn(numTrials,2);
+    r = rNew(s).*randn(numTrials,2);
+ 
+%% Loop through trials
+    for n=1:numTrials
+        y(n) = x(n,1)+x(n,2) + r(n);
+        e(n,1) = (y(n) + p(n));
+        e(n,2) = y(n) + p(n);
+ 
+        x(n+1, 1) = AImpNew(s)*x(n,1) - BImpNew(s)* e(n,1)*V(n) + q(n,1);
+        x(n+1, 2) = AExpNew(s)*x(n,2) - BExpNew(s)* e(n,2)*V(n) + q(n,2);
+    end
+    
+    StratSimPost(s).x = x;
+    StratSimPost(s).e = e;
+    StratSimPost(s).y = y;
+    StratSimPost(s).V=V';
+    StratSimPost(s).p=p';
+end
+ 
+subplot(3,3,1)
+plot(StratSim(1).y, 'g', 'linewidth', 1)
+hold on
+plot(StratSimPost(1).y, 'r', 'linewidth', 1)
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+title('Posterior predictive data')
+ylabel('Reach direction')
+xlabel('Trial #')
+%legend('real data', 'posterior predictive data 1', 'posterior predictive data 2', 'posterior predictive data 3', 'posterior predictive data 4', 'posterior predictive data 5', 'posterior predictive data 6', 'posterior predictive data 7', 'posterior predictive data 8', 'posterior predictive data 9', 'posterior predictive data 10')
+legend('real data', 'posterior predictive data 1')
+ 
+subplot(3,3,2)
+plot(StratSim(1).y, 'g', 'linewidth', 1)
+hold on
+plot(StratSimPost(2).y, 'r', 'linewidth', 1)
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+title('Posterior predictive data')
+ylabel('Reach direction')
+xlabel('Trial #')
+legend('real data', 'posterior predictive data 2')
+ 
+subplot(3,3,3)
+plot(StratSim(1).y, 'g', 'linewidth', 1)
+hold on
+plot(StratSimPost(3).y, 'r', 'linewidth', 1)
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+title('Posterior predictive data')
+ylabel('Reach direction')
+xlabel('Trial #')
+legend('real data', 'posterior predictive data 3')
+ 
+subplot(3,3,4)
+plot(StratSim(1).y, 'g', 'linewidth', 1)
+hold on
+plot(StratSimPost(4).y, 'r', 'linewidth', 1)
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+title('Posterior predictive data')
+ylabel('Reach direction')
+xlabel('Trial #')
+legend('real data', 'posterior predictive data 4')
+ 
+subplot(3,3,5)
+plot(StratSim(1).y, 'g', 'linewidth', 1)
+hold on
+plot(StratSimPost(5).y, 'r', 'linewidth', 1)
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+title('Posterior predictive data')
+ylabel('Reach direction')
+xlabel('Trial #')
+legend('real data', 'posterior predictive data 5')
+ 
+subplot(3,3,6)
+plot(StratSim(1).y, 'g', 'linewidth', 1)
+hold on
+plot(StratSimPost(6).y, 'r', 'linewidth', 1)
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+title('Posterior predictive data')
+ylabel('Reach direction')
+xlabel('Trial #')
+legend('real data', 'posterior predictive data 6')
+ 
+subplot(3,3,7)
+plot(StratSim(1).y, 'g', 'linewidth', 1)
+hold on
+plot(StratSimPost(7).y, 'r', 'linewidth', 1)
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+title('Posterior predictive data')
+ylabel('Reach direction')
+xlabel('Trial #')
+legend('real data', 'posterior predictive data 7')
+ 
+subplot(3,3,8)
+plot(StratSim(1).y, 'g', 'linewidth', 1)
+hold on
+plot(StratSimPost(8).y, 'r', 'linewidth', 1)
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+title('Posterior predictive data')
+ylabel('Reach direction')
+xlabel('Trial #')
+legend('real data', 'posterior predictive data 8')
+ 
+subplot(3,3,9)
+plot(StratSim(1).y, 'g', 'linewidth', 1)
+hold on
+plot(StratSimPost(9).y, 'r', 'linewidth', 1)
+box off
+set(gcf,'color', 'white')
+set(gca, 'fontweight', 'bold')
+title('Posterior predictive data')
+ylabel('Reach direction')
+xlabel('Trial #')
+legend('real data', 'posterior predictive data 9')
